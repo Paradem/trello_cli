@@ -185,14 +185,16 @@ CLICOLOR_FORCE=1 ./trello_cli -c 456 | less   # Colors in pager
 ### Task List Output
 
 ```
-#123 Task Title Here
-#456 Another Task
-#789 Final Task
+#123 Task Title Here              In Progress
+#456 Another Task                 To Do
+#789 Final Task                   Done
 ```
 
 - Cards are sorted by ID (ascending)
-- Columns are automatically sized for proper alignment
-- Shows list name when available
+- Table uses fixed-width columns for proper alignment
+- ID column fixed to 8 characters with proper padding
+- Title column fixed to 80 characters with truncation when necessary
+- Shows list name for each card
 
 ### Card Details Output
 

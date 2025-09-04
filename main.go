@@ -412,20 +412,36 @@ func main() {
 		return cardsToDisplay[i].id < cardsToDisplay[j].id
 	})
 
-	// Calculate column widths
-	maxIDWidth := 0
+	// Calculate list column width
+	maxListWidth := 0
 	for _, card := range cardsToDisplay {
-		idStr := fmt.Sprintf("#%d", card.id)
-		if len(idStr) > maxIDWidth {
-			maxIDWidth = len(idStr)
+		if len(card.listName) > maxListWidth {
+			maxListWidth = len(card.listName)
 		}
+	}
+
+	// Ensure minimum widths for better formatting
+	if maxListWidth < 10 { // Minimum list name width
+		maxListWidth = 10
 	}
 
 	// Print cards with fixed column widths
 	for _, card := range cardsToDisplay {
 		idStr := fmt.Sprintf("#%d", card.id)
-		// Format: ID (fixed width) + Title + List (right-aligned)
-		styledID := lipgloss.NewStyle().Foreground(lipgloss.Color("3")) // Yellow color
-		fmt.Printf("%-*s %s\n", maxIDWidth+1, styledID.Render(idStr), card.name)
+		// Truncate title to 80 characters if needed
+		title := card.name
+		if len(title) > 80 {
+			title = title[:77] + "..."
+		}
+
+		// Format: ID (fixed width) + Title (fixed width) + List (fixed width)
+		styledID := lipgloss.NewStyle().Foreground(lipgloss.Color("3"))   // Yellow color
+		styledList := lipgloss.NewStyle().Foreground(lipgloss.Color("8")) // Gray color
+
+		// Apply styles after width formatting to maintain proper alignment
+		idFormatted := fmt.Sprintf("%-8s", idStr)
+		titleFormatted := fmt.Sprintf("%-80s", title)
+
+		fmt.Printf("%s %s %s\n", styledID.Render(idFormatted), titleFormatted, styledList.Render(card.listName))
 	}
 }

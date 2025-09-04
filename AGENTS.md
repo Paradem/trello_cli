@@ -16,6 +16,7 @@ CLI application in Go that connects to Trello REST API to query tasks assigned t
 - [x] Add CLICOLOR_FORCE support for preserving ANSI colors when piping output (uses glamour.Render with dark style)
 - [x] Display assignee full names instead of IDs in card details
 - [x] Add -f flag for field-specific output when used with -c flag
+- [x] Add list name to table output
 
 ## Project Summary
 CLI application successfully created with the following features:
@@ -26,14 +27,16 @@ CLI application successfully created with the following features:
 - Filters and displays tasks assigned to the user in #123 TITLE format (using numeric IDs)
 - CLI flags for filtering: --assigned (default), --all, or --lists for specific lists
 - List filtering with comma-separated values (case-insensitive)
-- Table output with fixed-size columns for proper alignment
+- Table output with fixed-width columns for proper alignment
+- ID column fixed to 8 characters with proper padding
+- Title column fixed to 80 characters with truncation when necessary
 - Card detail view with --card flag showing beautifully rendered markdown using glamour
 - Cards sorted by ShortID (ascending) for consistent ordering
 - External dependencies: BubbleTea, Bubbles, Lipgloss, Glamour for markdown rendering
 - Improved error handling for 401 authentication errors
 - Fixed API calls to use proper card IDs instead of ShortIDs for card details
 - Uses Trello's idShort field for numeric card identifiers
-- Shows which list/column each card belongs to
+- Shows which list/column each card belongs to in the table output
 - CLICOLOR_FORCE support for preserving ANSI colors when piping output
 - Displays assignee full names instead of IDs in card details
 - Field-specific output with -f flag for extracting individual card fields
@@ -72,11 +75,11 @@ CLICOLOR_FORCE=1 trello_cli -c 456 | less        # Colors preserved in pager
 
 ## Output Format
 ```
-#123 Task Title
-#456 Another Task
-#789 Final Task
+#123 Task Title              In Progress
+#456 Another Task            To Do
+#789 Final Task              Done
 ```
-*Columns are automatically sized based on the longest ID and content for proper alignment*
+*Table uses fixed-width columns with ID column fixed to 8 characters with proper padding and title fixed to 80 characters for proper alignment*
 - [ ] Create BubbleTea prompts
 - [ ] Implement HTTP client for Trello API
 - [ ] Parse API responses and filter tasks
