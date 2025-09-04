@@ -407,8 +407,11 @@ func main() {
 		}
 	}
 
-	// Sort cards by ShortID (ascending)
+	// Sort cards by list name first, then by ShortID (ascending)
 	sort.Slice(cardsToDisplay, func(i, j int) bool {
+		if cardsToDisplay[i].listName != cardsToDisplay[j].listName {
+			return cardsToDisplay[i].listName < cardsToDisplay[j].listName
+		}
 		return cardsToDisplay[i].id < cardsToDisplay[j].id
 	})
 

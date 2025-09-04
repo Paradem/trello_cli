@@ -17,6 +17,7 @@ CLI application in Go that connects to Trello REST API to query tasks assigned t
 - [x] Display assignee full names instead of IDs in card details
 - [x] Add -f flag for field-specific output when used with -c flag
 - [x] Add list name to table output
+- [x] Sort cards by list name first, then by ShortID
 
 ## Project Summary
 CLI application successfully created with the following features:
@@ -31,7 +32,7 @@ CLI application successfully created with the following features:
 - ID column fixed to 8 characters with proper padding
 - Title column fixed to 80 characters with truncation when necessary
 - Card detail view with --card flag showing beautifully rendered markdown using glamour
-- Cards sorted by ShortID (ascending) for consistent ordering
+- Cards sorted by list name first, then by ShortID (ascending) for consistent ordering
 - External dependencies: BubbleTea, Bubbles, Lipgloss, Glamour for markdown rendering
 - Improved error handling for 401 authentication errors
 - Fixed API calls to use proper card IDs instead of ShortIDs for card details

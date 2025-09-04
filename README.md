@@ -190,7 +190,7 @@ CLICOLOR_FORCE=1 ./trello_cli -c 456 | less   # Colors in pager
 #789 Final Task                   Done
 ```
 
-- Cards are sorted by ID (ascending)
+- Cards are sorted by list name first, then by ID (ascending)
 - Table uses fixed-width columns for proper alignment
 - ID column fixed to 8 characters with proper padding
 - Title column fixed to 80 characters with truncation when necessary
