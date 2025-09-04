@@ -13,6 +13,7 @@ import (
 	"trello_cli/trello"
 
 	"github.com/charmbracelet/glamour"
+	"github.com/charmbracelet/lipgloss"
 )
 
 func showCardDetails(cardID int, fieldFilter string) {
@@ -424,6 +425,7 @@ func main() {
 	for _, card := range cardsToDisplay {
 		idStr := fmt.Sprintf("#%d", card.id)
 		// Format: ID (fixed width) + Title + List (right-aligned)
-		fmt.Printf("%-*s %s\n", maxIDWidth+1, idStr, card.name)
+		styledID := lipgloss.NewStyle().Foreground(lipgloss.Color("3")) // Yellow color
+		fmt.Printf("%-*s %s\n", maxIDWidth+1, styledID.Render(idStr), card.name)
 	}
 }
