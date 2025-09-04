@@ -184,8 +184,10 @@ func showCardDetails(cardID int, fieldFilter string) {
 			} else {
 				fmt.Print("Unknown")
 			}
+		case "link":
+			fmt.Printf("https://trello.com/c/%s", detailedCard.ShortLink)
 		default:
-			log.Fatalf("Unknown field: %s. Available fields: title, description, status, assignees, labels, list", fieldFilter)
+			log.Fatalf("Unknown field: %s. Available fields: title, description, status, assignees, labels, list, link", fieldFilter)
 		}
 		return
 	}

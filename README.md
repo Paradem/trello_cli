@@ -148,6 +148,7 @@ Extract specific fields for scripting and automation:
 - `labels` - Comma-separated list of label names
 - `list` - Name of the list/column the card is in
 - `status` - Card status (Open/Closed)
+- `link` - Direct link to card on Trello website
 
 ### Examples
 
@@ -174,6 +175,7 @@ Extract specific fields for scripting and automation:
 ./trello_cli -c 123 -f labels          # Just labels
 ./trello_cli -c 123 -f list            # Just list name
 ./trello_cli -c 123 -f status          # Just status
+./trello_cli -c 123 -f link            # Just Trello link
 
 # Color preservation
 CLICOLOR_FORCE=1 ./trello_cli -c 123 | cat    # Force colors
@@ -270,7 +272,7 @@ This application uses the Trello REST API:
 - Example: `CLICOLOR_FORCE=1 ./trello_cli -c 123 | less`
 
 **"Unknown field" error**
-- Valid fields: `title`, `description`, `assignees`, `labels`, `list`, `status`
+- Valid fields: `title`, `description`, `assignees`, `labels`, `list`, `status`, `link`
 - Field names are case-insensitive
 
 ### Getting Help

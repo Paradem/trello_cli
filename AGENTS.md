@@ -18,6 +18,7 @@ CLI application in Go that connects to Trello REST API to query tasks assigned t
 - [x] Add -f flag for field-specific output when used with -c flag
 - [x] Add list name to table output
 - [x] Sort cards by list name first, then by ShortID
+- [x] Add link field to -f flag for Trello website links
 
 ## Project Summary
 CLI application successfully created with the following features:
@@ -40,7 +41,7 @@ CLI application successfully created with the following features:
 - Shows which list/column each card belongs to in the table output
 - CLICOLOR_FORCE support for preserving ANSI colors when piping output
 - Displays assignee full names instead of IDs in card details
-- Field-specific output with -f flag for extracting individual card fields
+- Field-specific output with -f flag for extracting individual card fields including Trello links
 
 ## CLI Usage
 ```
@@ -68,6 +69,7 @@ trello_cli -c 123 -f assignees       # Show only assignees (full names)
 trello_cli -c 123 -f labels          # Show only labels
 trello_cli -c 123 -f list            # Show only the list name
 trello_cli -c 123 -f status          # Show only status (Open/Closed)
+trello_cli -c 123 -f link            # Show only the Trello link
 
 # Preserve ANSI colors when piping output
 CLICOLOR_FORCE=1 trello_cli --card #123 | cat    # Force colors even when piping
