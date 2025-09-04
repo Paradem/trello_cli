@@ -67,6 +67,12 @@ type Organization struct {
 	Name string `json:"displayName"`
 }
 
+type Member struct {
+	ID       string `json:"id"`
+	FullName string `json:"fullName"`
+	Username string `json:"username"`
+}
+
 func NewClient(apiKey, apiToken string) *Client {
 	return &Client{
 		apiKey:   apiKey,
@@ -149,6 +155,30 @@ func (c *Client) GetMemberID() (string, error) {
 	}
 
 	return member.ID, nil
+}
+
+func (c *Client) GetMember(memberID string) (*Member, error) {
+	resp, err := c.makeRequest("GET", fmt.Sprintf("/members/%s", memberID), nil)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("API request failed with status: %s", resp.Status)
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var member Member
+	if err := json.Unmarshal(body, &member); err != nil {
+		return nil, err
+	}
+
+	return &member, nil
 }
 
 func (c *Client) GetOrganizations() ([]Organization, error) {

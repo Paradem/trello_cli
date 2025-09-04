@@ -14,6 +14,8 @@ CLI application in Go that connects to Trello REST API to query tasks assigned t
 - [x] Add markdown rendering with glamour package for card details
 - [x] Fix card detail API calls to use proper card IDs instead of ShortIDs
 - [x] Add CLICOLOR_FORCE support for preserving ANSI colors when piping output (uses glamour.Render with dark style)
+- [x] Display assignee full names instead of IDs in card details
+- [x] Add -f flag for field-specific output when used with -c flag
 
 ## Project Summary
 CLI application successfully created with the following features:
@@ -33,6 +35,8 @@ CLI application successfully created with the following features:
 - Uses Trello's idShort field for numeric card identifiers
 - Shows which list/column each card belongs to
 - CLICOLOR_FORCE support for preserving ANSI colors when piping output
+- Displays assignee full names instead of IDs in card details
+- Field-specific output with -f flag for extracting individual card fields
 
 ## CLI Usage
 ```
@@ -52,6 +56,14 @@ trello_cli --card #123        # Show detailed info for card #123
 trello_cli --card 123         # Same as above (bare integer)
 trello_cli -c #456            # Short form for card details
 trello_cli -c 456             # Same as above (bare integer)
+
+# Show specific field from card
+trello_cli -c 123 -f title           # Show only the card title
+trello_cli -c 123 -f description     # Show only the description
+trello_cli -c 123 -f assignees       # Show only assignees (full names)
+trello_cli -c 123 -f labels          # Show only labels
+trello_cli -c 123 -f list            # Show only the list name
+trello_cli -c 123 -f status          # Show only status (Open/Closed)
 
 # Preserve ANSI colors when piping output
 CLICOLOR_FORCE=1 trello_cli --card #123 | cat    # Force colors even when piping
@@ -78,3 +90,5 @@ CLICOLOR_FORCE=1 trello_cli -c 456 | less        # Colors preserved in pager
 - Card details rendered with beautiful markdown formatting using Glamour
 - Fixed API integration to properly handle card IDs for detailed views
 - CLICOLOR_FORCE=1 environment variable preserves ANSI colors when piping output
+- Assignee names are looked up and displayed as full names instead of IDs
+- -f flag allows extracting specific fields from cards for scripting/automation

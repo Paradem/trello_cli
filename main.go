@@ -15,7 +15,7 @@ import (
 	"github.com/charmbracelet/glamour"
 )
 
-func showCardDetails(cardID int) {
+func showCardDetails(cardID int, fieldFilter string) {
 	// Load existing config
 	cfg, err := config.LoadConfig()
 	if err != nil {
@@ -94,7 +94,14 @@ func showCardDetails(cardID int) {
 	if len(detailedCard.IDMembers) > 0 {
 		markdown.WriteString("## Assignees\n")
 		for _, memberID := range detailedCard.IDMembers {
-			markdown.WriteString(fmt.Sprintf("- %s\n", memberID))
+			// Look up member details to get full name
+			member, err := client.GetMember(memberID)
+			if err != nil {
+				// If lookup fails, show the ID
+				markdown.WriteString(fmt.Sprintf("- %s\n", memberID))
+			} else {
+				markdown.WriteString(fmt.Sprintf("- %s\n", member.FullName))
+			}
 		}
 		markdown.WriteString("\n")
 	}
@@ -134,6 +141,54 @@ func showCardDetails(cardID int) {
 	markdown.WriteString("## Links\n\n")
 	markdown.WriteString(fmt.Sprintf("- View this card on Trello: https://trello.com/c/%s\n", detailedCard.ShortLink))
 
+	// Handle field filtering - if fieldFilter is specified, output only that field
+	if fieldFilter != "" {
+		switch strings.ToLower(fieldFilter) {
+		case "title":
+			fmt.Print(detailedCard.Name)
+		case "description":
+			if detailedCard.Desc != "" {
+				fmt.Print(detailedCard.Desc)
+			}
+		case "status":
+			if detailedCard.Closed {
+				fmt.Print("Closed")
+			} else {
+				fmt.Print("Open")
+			}
+		case "assignees":
+			if len(detailedCard.IDMembers) > 0 {
+				var names []string
+				for _, memberID := range detailedCard.IDMembers {
+					member, err := client.GetMember(memberID)
+					if err != nil {
+						names = append(names, memberID)
+					} else {
+						names = append(names, member.FullName)
+					}
+				}
+				fmt.Print(strings.Join(names, ", "))
+			}
+		case "labels":
+			if len(detailedCard.Labels) > 0 {
+				var labelNames []string
+				for _, label := range detailedCard.Labels {
+					labelNames = append(labelNames, label.Name)
+				}
+				fmt.Print(strings.Join(labelNames, ", "))
+			}
+		case "list":
+			if listName, exists := listMap[detailedCard.IDList]; exists {
+				fmt.Print(listName)
+			} else {
+				fmt.Print("Unknown")
+			}
+		default:
+			log.Fatalf("Unknown field: %s. Available fields: title, description, status, assignees, labels, list", fieldFilter)
+		}
+		return
+	}
+
 	// Render markdown with glamour
 	var out string
 
@@ -170,10 +225,12 @@ func main() {
 	allCards := flag.Bool("all", false, "Show all cards on the board")
 	listFilter := flag.String("lists", "", "Filter cards by specific lists (comma-separated)")
 	showCard := flag.String("card", "", "Show detailed information for a specific card by ID (format: #123 or 123)")
+	fieldFilter := flag.String("field", "", "Show only specific field from card (use with -c): title, description, assignees, labels, list, status")
 	flag.BoolVar(assignedOnly, "a", true, "Show only cards assigned to current user (short)")
 	flag.BoolVar(allCards, "A", false, "Show all cards on the board (short)")
 	flag.StringVar(listFilter, "l", "", "Filter cards by specific lists (comma-separated, short)")
 	flag.StringVar(showCard, "c", "", "Show detailed information for a specific card by ID (format: #123 or 123, short)")
+	flag.StringVar(fieldFilter, "f", "", "Show only specific field from card (use with -c): title, description, assignees, labels, list, status (short)")
 	flag.Parse()
 
 	// Validate flags - if both are set, prefer --all
@@ -202,7 +259,7 @@ func main() {
 			log.Fatalf("Invalid card ID: %s (must be numeric)", idStr)
 		}
 
-		showCardDetails(cardID)
+		showCardDetails(cardID, *fieldFilter)
 		return
 	}
 
