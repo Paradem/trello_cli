@@ -186,8 +186,23 @@ func showCardDetails(cardID int, fieldFilter string) {
 			}
 		case "link":
 			fmt.Printf("https://trello.com/c/%s", detailedCard.ShortLink)
+		case "created_at":
+			// Extract creation date from card ID (first 8 characters of ID are hexadecimal timestamp)
+			if len(detailedCard.ID) >= 8 {
+				// The first 8 characters of the card ID represent the timestamp in hexadecimal
+				timestampHex := detailedCard.ID[:8]
+				if timestamp, err := strconv.ParseInt(timestampHex, 16, 64); err == nil {
+					// Convert from seconds to milliseconds and create time
+					createdAt := time.Unix(timestamp, 0)
+					fmt.Print(createdAt.Format("2006-01-02 15:04:05"))
+				} else {
+					fmt.Print("Unknown")
+				}
+			} else {
+				fmt.Print("Unknown")
+			}
 		default:
-			log.Fatalf("Unknown field: %s. Available fields: title, description, status, assignees, labels, list, link", fieldFilter)
+			log.Fatalf("Unknown field: %s. Available fields: title, description, status, assignees, labels, list, link, created_at", fieldFilter)
 		}
 		return
 	}
@@ -228,12 +243,12 @@ func main() {
 	allCards := flag.Bool("all", false, "Show all cards on the board")
 	listFilter := flag.String("lists", "", "Filter cards by specific lists (comma-separated)")
 	showCard := flag.String("card", "", "Show detailed information for a specific card by ID (format: #123 or 123)")
-	fieldFilter := flag.String("field", "", "Show only specific field from card (use with -c): title, description, assignees, labels, list, status")
+	fieldFilter := flag.String("field", "", "Show only specific field from card (use with -c): title, description, assignees, labels, list, status, created_at")
 	flag.BoolVar(assignedOnly, "a", true, "Show only cards assigned to current user (short)")
 	flag.BoolVar(allCards, "A", false, "Show all cards on the board (short)")
 	flag.StringVar(listFilter, "l", "", "Filter cards by specific lists (comma-separated, short)")
 	flag.StringVar(showCard, "c", "", "Show detailed information for a specific card by ID (format: #123 or 123, short)")
-	flag.StringVar(fieldFilter, "f", "", "Show only specific field from card (use with -c): title, description, assignees, labels, list, status (short)")
+	flag.StringVar(fieldFilter, "f", "", "Show only specific field from card (use with -c): title, description, assignees, labels, list, status, created_at (short)")
 	flag.Parse()
 
 	// Validate flags - if both are set, prefer --all
