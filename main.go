@@ -169,6 +169,8 @@ func showCardDetails(cardID int, fieldFilter string) {
 					}
 				}
 				fmt.Print(strings.Join(names, ", "))
+			} else {
+				fmt.Print("No assignees")
 			}
 		case "labels":
 			if len(detailedCard.Labels) > 0 {
